@@ -1,0 +1,83 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-user-profiles
+      author: ilitvak
+      changes:
+        - createTable:
+            tableName: user_profiles
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: full_name
+                  type: varchar(255)
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: family_name
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: is_email_verified
+                  type: boolean
+              - column:
+                  name: birth_date
+                  type: date
+              - column:
+                  name: avatar
+                  type: varchar(512)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: gender
+                  type: varchar(32)
+              - column:
+                  name: is_public
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: privacy_level
+                  type: varchar(32)
+                  defaultValue: PUBLIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language
+                  type: varchar(32)
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: deleted_at
+                  type: timestamp
+              - column:
+                  name: deletion_reason
+                  type: varchar(32)
