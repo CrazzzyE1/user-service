@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-user-profile-friends
+      author: ilitvak
+      changes:
+        - createTable:
+            tableName: user_profile_friends
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: friend_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: user_profile_friends
+            columnNames: user_id, friend_id
+            constraintName: pk_user_profile_friends
+
+        - addForeignKeyConstraint:
+            baseTableName: user_profile_friends
+            baseColumnNames: user_id
+            constraintName: fk_user_profile_friends_user
+            referencedTableName: user_profiles
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: user_profile_friends
+            baseColumnNames: friend_id
+            constraintName: fk_user_profile_friends_friend
+            referencedTableName: user_profiles
+            referencedColumnNames: id
+            onDelete: CASCADE

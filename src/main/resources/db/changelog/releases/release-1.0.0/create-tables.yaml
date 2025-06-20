@@ -48,12 +48,6 @@ databaseChangeLog:
                   name: gender
                   type: varchar(32)
               - column:
-                  name: is_public
-                  type: boolean
-                  defaultValueBoolean: true
-                  constraints:
-                    nullable: false
-              - column:
                   name: privacy_level
                   type: varchar(32)
                   defaultValue: PUBLIC

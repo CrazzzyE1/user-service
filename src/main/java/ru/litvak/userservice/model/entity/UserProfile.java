@@ -10,12 +10,14 @@ import ru.litvak.userservice.enumerated.PrivacyLevel;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "user_profiles")
+@Table(name = "user_profiles"   )
 public class UserProfile {
 
     @Id
@@ -37,9 +39,6 @@ public class UserProfile {
     private String location;
     private String gender;
 
-    @Column(nullable = false)
-    private Boolean isPublic = true;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PrivacyLevel privacyLevel = PrivacyLevel.PUBLIC;
@@ -58,4 +57,20 @@ public class UserProfile {
 
     @Enumerated(EnumType.STRING)
     private DeleteReason deletionReason;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_profile_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<UserProfile> friends = new HashSet<>();
+
+    @Transient
+    private Boolean isOwner;
+
+    public Boolean isPublic() {
+        return PrivacyLevel.PUBLIC.equals(privacyLevel);
+    }
+
 }
