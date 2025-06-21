@@ -2,6 +2,7 @@ package ru.litvak.userservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.mapper.UserProfileMapper;
 import ru.litvak.userservice.model.dto.UserProfileDto;
@@ -37,5 +38,11 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale) {
         return userProfileManager.getUserStatuses(enumClass, locale);
+    }
+
+    @Override
+    public void updateUserStatus(String authHeader, StatusType status) {
+        UUID me = JwtTokenMapper.map(authHeader).getId();
+        userProfileManager.updateUserStatus(me, status);
     }
 }

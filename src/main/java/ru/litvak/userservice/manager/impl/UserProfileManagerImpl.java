@@ -3,6 +3,7 @@ package ru.litvak.userservice.manager.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.EnumLocalization;
@@ -71,6 +72,14 @@ public class UserProfileManagerImpl implements UserProfileManager {
         return Arrays.stream(enumClass.getEnumConstants())
                 .map(e -> new LocalizedEnum(e.name(), labelMap.getOrDefault(e.name(), e.name())))
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public void updateUserStatus(UUID me, StatusType status) {
+        UserProfile userProfile = userProfileRepository.findById(me)
+                .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(me)));
+        userProfile.setStatus(status);
     }
 
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {

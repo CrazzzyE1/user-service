@@ -1,5 +1,6 @@
 package ru.litvak.userservice.service;
 
+import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.response.LocalizedEnum;
 
@@ -13,4 +14,6 @@ public interface UserProfileService {
     UserProfileDto getUserProfile(String authHeader, UUID id);
 
     List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale);
+
+    void updateUserStatus(String authHeader, StatusType status);
 }
