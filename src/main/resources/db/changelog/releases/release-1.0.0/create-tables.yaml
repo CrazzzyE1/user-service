@@ -41,7 +41,7 @@ databaseChangeLog:
               - column:
                   name: attempts_change_birth_date
                   type: integer
-                  defaultValueNumeric: 0
+                  defaultValueNumeric: '0'
                   constraints:
                     nullable: false
               - column:
