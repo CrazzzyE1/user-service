@@ -39,8 +39,11 @@ databaseChangeLog:
                   name: birth_date
                   type: date
               - column:
-                  name: avatar
-                  type: varchar(512)
+                  name: attempts_change_birth_date
+                  type: integer
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
               - column:
                   name: location
                   type: varchar(255)
@@ -53,6 +56,9 @@ databaseChangeLog:
                   defaultValue: PUBLIC
                   constraints:
                     nullable: false
+              - column:
+                  name: status
+                  type: varchar(32)
               - column:
                   name: language
                   type: varchar(32)

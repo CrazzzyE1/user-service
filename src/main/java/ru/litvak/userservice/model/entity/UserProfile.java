@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import ru.litvak.userservice.enumerated.DeleteReason;
 import ru.litvak.userservice.enumerated.PrivacyLevel;
+import ru.litvak.userservice.enumerated.StatusType;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -34,10 +35,18 @@ public class UserProfile {
     private String email;
 
     private Boolean isEmailVerified;
+
+    @Column(nullable = false)
     private LocalDate birthDate;
-    private String avatar;
+
+    @Column(name ="attempts_change_birth_date", nullable = false)
+    private Integer attemptsChangeBirthDate = 0;
+
     private String location;
     private String gender;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -71,6 +80,14 @@ public class UserProfile {
 
     public Boolean isPublic() {
         return PrivacyLevel.PUBLIC.equals(privacyLevel);
+    }
+
+    public Integer getFriendsCount() {
+        return friends.size();
+    }
+
+    public boolean isChangeBirthDateAvailable() {
+        return attemptsChangeBirthDate <= 3;
     }
 
 }

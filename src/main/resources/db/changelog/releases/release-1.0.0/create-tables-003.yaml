@@ -1,0 +1,195 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-enum-localization-table
+      author: ilitvak
+      changes:
+        - createTable:
+            tableName: enum_localization
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: enum_type
+                  type: VARCHAR(255)
+              - column:
+                  name: enum_value
+                  type: VARCHAR(255)
+              - column:
+                  name: locale
+                  type: VARCHAR(10)
+              - column:
+                  name: label
+                  type: VARCHAR(255)
+
+  # StatusType
+  - changeSet:
+      id: insert-status-waiting
+      author: ilitvak
+      changes:
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: StatusType }
+              - column: { name: enum_value, value: WAITING }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Waiting }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: StatusType }
+              - column: { name: enum_value, value: WAITING }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Ожидает }
+
+  - changeSet:
+      id: insert-status-no-waiting
+      author: ilitvak
+      changes:
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: StatusType }
+              - column: { name: enum_value, value: NO_WAITING }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Not waiting }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: StatusType }
+              - column: { name: enum_value, value: NO_WAITING }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Не ожидает }
+
+  # PrivacyLevel
+  - changeSet:
+      id: insert-privacy-level
+      author: ilitvak
+      changes:
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: PUBLIC }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Public }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: PUBLIC }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Публично }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: FRIENDS_ONLY }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Friends only }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: FRIENDS_ONLY }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Только для друзей }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: PRIVATE }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Private }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: PrivacyLevel }
+              - column: { name: enum_value, value: PRIVATE }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Приватно }
+
+  # DeleteReason
+  - changeSet:
+      id: insert-delete-reasons
+      author: ilitvak
+      changes:
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: MODERATOR_ACTION }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Moderator action }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: MODERATOR_ACTION }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Действие модератора }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: USER_REQUEST }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: User request }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: USER_REQUEST }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Запрос пользователя }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: VIOLATION }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Violation }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: VIOLATION }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Нарушение }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: PROLONGED_INACTIVITY }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Prolonged inactivity }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: PROLONGED_INACTIVITY }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Долгое бездействие }
+
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: OTHER }
+              - column: { name: locale, value: en }
+              - column: { name: label, value: Other }
+        - insert:
+            tableName: enum_localization
+            columns:
+              - column: { name: enum_type, value: DeleteReason }
+              - column: { name: enum_value, value: OTHER }
+              - column: { name: locale, value: ru }
+              - column: { name: label, value: Другое }

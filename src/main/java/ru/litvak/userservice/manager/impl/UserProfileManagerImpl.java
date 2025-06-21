@@ -5,19 +5,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.model.dto.UserProfileDto;
+import ru.litvak.userservice.model.entity.EnumLocalization;
 import ru.litvak.userservice.model.entity.UserProfile;
+import ru.litvak.userservice.model.response.LocalizedEnum;
+import ru.litvak.userservice.repository.EnumLocalizationRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static ru.litvak.userservice.enumerated.PrivacyLevel.*;
+import static ru.litvak.userservice.enumerated.PrivacyLevel.FRIENDS_ONLY;
 
 @Component
 @RequiredArgsConstructor
 public class UserProfileManagerImpl implements UserProfileManager {
 
     private final UserProfileRepository userProfileRepository;
+    private final EnumLocalizationRepository enumLocalizationRepository;
 
     @Transactional
     @Override
@@ -47,12 +51,26 @@ public class UserProfileManagerImpl implements UserProfileManager {
         UserProfile userProfile = userProfileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(id)));
         boolean isOwner = me.equals(id);
-        if (isOwner || userProfile.isPublic() || isFriends(me, userProfile)) {
+        if ((isOwner || userProfile.isPublic() || isFriends(me, userProfile))
+                && !userProfile.getIsDeleted()) {
             userProfile.setIsOwner(isOwner);
             return userProfile;
         }
 
         return createDummyUserProfileWithoutPrivateFields(userProfile);
+    }
+
+    @Override
+    public List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale) {
+        String enumType = enumClass.getSimpleName();
+        List<EnumLocalization> localizations = enumLocalizationRepository.findByEnumTypeAndLocale(enumType, locale.getLanguage());
+
+        Map<String, String> labelMap = localizations.stream()
+                .collect(Collectors.toMap(EnumLocalization::getEnumValue, EnumLocalization::getLabel));
+
+        return Arrays.stream(enumClass.getEnumConstants())
+                .map(e -> new LocalizedEnum(e.name(), labelMap.getOrDefault(e.name(), e.name())))
+                .toList();
     }
 
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {

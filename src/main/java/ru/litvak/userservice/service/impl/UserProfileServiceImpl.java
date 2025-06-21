@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.mapper.UserProfileMapper;
 import ru.litvak.userservice.model.dto.UserProfileDto;
+import ru.litvak.userservice.model.response.LocalizedEnum;
 import ru.litvak.userservice.service.UserProfileService;
 import ru.litvak.userservice.util.JwtTokenMapper;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -29,5 +32,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserProfileDto getUserProfile(String authHeader, UUID id) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
         return userProfileMapper.toDto(userProfileManager.getUserProfile(me, id));
+    }
+
+    @Override
+    public List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale) {
+        return userProfileManager.getUserStatuses(enumClass, locale);
     }
 }

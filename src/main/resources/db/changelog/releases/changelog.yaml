@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/releases/release-1.0.0/create-tables.yaml
   - include:
       file: db/changelog/releases/release-1.0.0/create-tables-002.yaml
+  - include:
+      file: db/changelog/releases/release-1.0.0/create-tables-003.yaml
