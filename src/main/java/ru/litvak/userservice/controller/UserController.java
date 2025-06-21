@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/profiles")
 public class UserController {
 
     private final UserProfileService userProfileService;
