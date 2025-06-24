@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.model.dto.UserProfileDto;
+import ru.litvak.userservice.model.request.RelationRequest;
 import ru.litvak.userservice.model.request.UpdateUserStatusRequest;
 import ru.litvak.userservice.model.response.LocalizedEnum;
+import ru.litvak.userservice.model.response.RelationResponse;
 import ru.litvak.userservice.service.UserProfileService;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class UserController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/me")
-    public UserProfileDto getUsers(@RequestHeader(value = "Authorization") String authHeader) {
+    public UserProfileDto getOwnerUserProfile(@RequestHeader(value = "Authorization") String authHeader) {
         return userProfileService.getMe(authHeader);
     }
 
@@ -43,5 +45,10 @@ public class UserController {
     public void updateUserStatus(@RequestHeader(value = "Authorization") String authHeader,
                                  @RequestBody @Valid UpdateUserStatusRequest request) {
         userProfileService.updateUserStatus(authHeader, request.getStatus());
+    }
+
+    @PostMapping("/relations")
+    public RelationResponse getRelations(@RequestBody @Valid RelationRequest request) {
+        return userProfileService.getRelations(request);
     }
 }

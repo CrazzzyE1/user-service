@@ -1,9 +1,11 @@
 package ru.litvak.userservice.manager;
 
+import jakarta.validation.constraints.NotNull;
 import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.model.response.LocalizedEnum;
+import ru.litvak.userservice.model.response.RelationResponse;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,4 +20,6 @@ public interface UserProfileManager {
     List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale);
 
     void updateUserStatus(UUID me, StatusType status);
+
+    RelationResponse getRelations(@NotNull UUID me, @NotNull UUID friend);
 }

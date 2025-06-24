@@ -6,7 +6,9 @@ import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.mapper.UserProfileMapper;
 import ru.litvak.userservice.model.dto.UserProfileDto;
+import ru.litvak.userservice.model.request.RelationRequest;
 import ru.litvak.userservice.model.response.LocalizedEnum;
+import ru.litvak.userservice.model.response.RelationResponse;
 import ru.litvak.userservice.service.UserProfileService;
 import ru.litvak.userservice.util.JwtTokenMapper;
 
@@ -44,5 +46,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     public void updateUserStatus(String authHeader, StatusType status) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
         userProfileManager.updateUserStatus(me, status);
+    }
+
+    @Override
+    public RelationResponse getRelations(RelationRequest request) {
+        return userProfileManager.getRelations(request.getMe(), request.getFriend());
     }
 }

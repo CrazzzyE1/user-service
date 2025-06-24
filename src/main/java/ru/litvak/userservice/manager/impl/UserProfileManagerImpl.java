@@ -9,6 +9,7 @@ import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.EnumLocalization;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.model.response.LocalizedEnum;
+import ru.litvak.userservice.model.response.RelationResponse;
 import ru.litvak.userservice.repository.EnumLocalizationRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
 
@@ -80,6 +81,13 @@ public class UserProfileManagerImpl implements UserProfileManager {
         UserProfile userProfile = userProfileRepository.findById(me)
                 .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(me)));
         userProfile.setStatus(status);
+    }
+
+    @Override
+    public RelationResponse getRelations(UUID me, UUID friend) {
+        UserProfile userProfile = userProfileRepository.findById(friend)
+                .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(friend)));
+        return new RelationResponse(userProfile.getPrivacyLevel(), isFriends(me, userProfile));
     }
 
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {
