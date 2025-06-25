@@ -11,6 +11,6 @@ import ru.litvak.userservice.enumerated.PrivacyLevel;
 @AllArgsConstructor
 public class RelationResponse {
     private PrivacyLevel privacyLevel;
-    @JsonProperty("isFriend")
-    private boolean isFriend;
+    @JsonProperty("isFriends")
+    private boolean isFriends;
 }

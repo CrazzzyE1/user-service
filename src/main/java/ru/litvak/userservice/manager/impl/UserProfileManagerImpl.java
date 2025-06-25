@@ -53,7 +53,9 @@ public class UserProfileManagerImpl implements UserProfileManager {
         UserProfile userProfile = userProfileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(id)));
         boolean isOwner = me.equals(id);
-        if ((isOwner || userProfile.isPublic() || isFriends(me, userProfile))
+        if ((isOwner
+                || userProfile.isPublic()
+                || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile))
                 && !userProfile.getIsDeleted()) {
             userProfile.setIsOwner(isOwner);
             return userProfile;
@@ -101,11 +103,8 @@ public class UserProfileManagerImpl implements UserProfileManager {
     }
 
     private boolean isFriends(UUID me, UserProfile userProfile) {
-        if (FRIENDS_ONLY.equals(userProfile.getPrivacyLevel())) {
-            return userProfile.getFriends().stream()
-                    .map(UserProfile::getId)
-                    .anyMatch(id -> id.equals(me));
-        }
-        return false;
+        return userProfile.getFriends().stream()
+                .map(UserProfile::getId)
+                .anyMatch(id -> id.equals(me));
     }
 }
