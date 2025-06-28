@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.litvak.userservice.enumerated.StatusType;
+import ru.litvak.userservice.exception.NotFoundException;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.EnumLocalization;
@@ -51,7 +52,7 @@ public class UserProfileManagerImpl implements UserProfileManager {
     @Override
     public UserProfile getUserProfile(UUID me, UUID id) {
         UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
         boolean isOwner = me.equals(id);
         if ((isOwner
                 || userProfile.isPublic()
@@ -81,14 +82,14 @@ public class UserProfileManagerImpl implements UserProfileManager {
     @Override
     public void updateUserStatus(UUID me, StatusType status) {
         UserProfile userProfile = userProfileRepository.findById(me)
-                .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(me)));
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(me)));
         userProfile.setStatus(status);
     }
 
     @Override
     public RelationResponse getRelations(UUID me, UUID friend) {
         UserProfile userProfile = userProfileRepository.findById(friend)
-                .orElseThrow(() -> new RuntimeException("User profile with id %s not found.".formatted(friend)));
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(friend)));
         return new RelationResponse(userProfile.getPrivacyLevel(), isFriends(me, userProfile));
     }
 
