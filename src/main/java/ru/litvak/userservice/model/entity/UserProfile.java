@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import ru.litvak.userservice.enumerated.DeleteReason;
+import ru.litvak.userservice.enumerated.Gender;
 import ru.litvak.userservice.enumerated.PrivacyLevel;
 import ru.litvak.userservice.enumerated.StatusType;
 
@@ -43,7 +44,9 @@ public class UserProfile {
     private Integer attemptsChangeBirthDate = 0;
 
     private String location;
-    private String gender;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Enumerated(EnumType.STRING)
     private StatusType status;
@@ -74,6 +77,12 @@ public class UserProfile {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<UserProfile> friends = new HashSet<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendRequest> sentFriendRequests = new HashSet<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendRequest> receivedFriendRequests = new HashSet<>();
 
     @Transient
     private Boolean isOwner;
