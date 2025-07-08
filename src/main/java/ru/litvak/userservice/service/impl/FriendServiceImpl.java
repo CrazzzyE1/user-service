@@ -47,4 +47,10 @@ public class FriendServiceImpl implements FriendService {
         UUID me = JwtTokenMapper.map(authHeader).getId();
         friendRequestManager.accept(me, requestId);
     }
+
+    @Override
+    public void deleteFriendRequest(String authHeader, Long requestId, Boolean isCanceled) {
+        UUID me = JwtTokenMapper.map(authHeader).getId();
+        friendRequestManager.delete(me, requestId, isCanceled);
+    }
 }

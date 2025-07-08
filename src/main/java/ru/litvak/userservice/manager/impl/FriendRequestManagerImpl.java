@@ -14,8 +14,7 @@ import ru.litvak.userservice.repository.UserProfileRepository;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.litvak.userservice.enumerated.FriendRequestStatus.ACCEPTED;
-import static ru.litvak.userservice.enumerated.FriendRequestStatus.PENDING;
+import static ru.litvak.userservice.enumerated.FriendRequestStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +72,21 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
         }
         return friendRequestRepository.findBySenderAndStatus(profile, PENDING);
 
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID me, Long id, Boolean isCanceled) {
+        UserProfile userProfile = userProfileRepository.findById(me)
+                .orElseThrow(() -> new NotFoundException("Profile with id %s not found".formatted(me)));
+        if (isCanceled) {
+            FriendRequest request = friendRequestRepository.findByIdAndReceiverAndStatus(id, userProfile, PENDING)
+                    .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
+            request.setStatus(CANCELLED);
+            return;
+        }
+        FriendRequest request = friendRequestRepository.findByIdAndSenderAndStatus(id, userProfile, PENDING)
+                .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
+        request.setStatus(REJECTED);
     }
 }

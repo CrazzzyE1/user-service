@@ -11,4 +11,6 @@ public interface FriendRequestManager {
     void create(UUID me, UUID friendId);
 
     List<FriendRequest> get(UUID me, boolean incoming);
+
+    void delete(UUID me, Long id, Boolean isCanceled);
 }

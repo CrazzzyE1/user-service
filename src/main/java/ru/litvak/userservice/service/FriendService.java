@@ -15,4 +15,6 @@ public interface FriendService {
     List<FriendRequestDto> getFriendRequest(String authHeader, boolean incoming);
 
     void acceptFriendRequest(String authHeader, Long requestId);
+
+    void deleteFriendRequest(String authHeader, Long requestId, Boolean isCanceled);
 }

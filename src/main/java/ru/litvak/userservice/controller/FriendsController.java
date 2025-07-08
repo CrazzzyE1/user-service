@@ -37,13 +37,19 @@ public class FriendsController {
         return friendService.getFriendRequest(authHeader, incoming);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/requests/{requestId}/accept")
     public void acceptFriendRequest(@RequestHeader(value = "Authorization") String authHeader,
                                     @PathVariable Long requestId) {
         friendService.acceptFriendRequest(authHeader, requestId);
     }
 
-    // TODO 08.07.2025:9:42:
-    //    отклонения заявки (DELETE /friends/requests/{requestId})
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/requests/{requestId}")
+    public void deleteFriendRequest(@RequestHeader(value = "Authorization") String authHeader,
+                                    @PathVariable Long requestId,
+                                    @RequestParam Boolean isCanceled) {
+        friendService.deleteFriendRequest(authHeader, requestId, isCanceled);
+    }
 }
