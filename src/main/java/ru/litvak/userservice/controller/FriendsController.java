@@ -3,10 +3,12 @@ package ru.litvak.userservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.litvak.userservice.model.dto.FriendRequestDto;
 import ru.litvak.userservice.model.request.FriendIdRequest;
 import ru.litvak.userservice.model.response.GetFriendsResponse;
 import ru.litvak.userservice.service.FriendService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,8 +30,20 @@ public class FriendsController {
                                   @RequestBody FriendIdRequest request) {
         friendService.sendFriendRequest(authHeader, request);
     }
-//    подтверждения заявки (PUT /friends/requests/{requestId}/accept)
-//
-//    отклонения заявки (DELETE /friends/requests/{requestId})
+
+    @GetMapping("/requests")
+    public List<FriendRequestDto> getFriendRequest(@RequestHeader(value = "Authorization") String authHeader,
+                                                   @RequestParam(required = false, defaultValue = "true") boolean incoming) {
+        return friendService.getFriendRequest(authHeader, incoming);
+    }
+
+    @PutMapping("/requests/{requestId}/accept")
+    public void acceptFriendRequest(@RequestHeader(value = "Authorization") String authHeader,
+                                    @PathVariable Long requestId) {
+        friendService.acceptFriendRequest(authHeader, requestId);
+    }
+
+    // TODO 08.07.2025:9:42:
+    //    отклонения заявки (DELETE /friends/requests/{requestId})
 
 }
