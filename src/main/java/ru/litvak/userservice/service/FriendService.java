@@ -17,4 +17,6 @@ public interface FriendService {
     void acceptFriendRequest(String authHeader, Long requestId);
 
     void deleteFriendRequest(String authHeader, Long requestId, Boolean isCanceled);
+
+    void deleteFriend(String authHeader, UUID id);
 }

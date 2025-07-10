@@ -52,4 +52,11 @@ public class FriendsController {
                                     @RequestParam Boolean isCanceled) {
         friendService.deleteFriendRequest(authHeader, requestId, isCanceled);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteFriend(@RequestHeader(value = "Authorization") String authHeader,
+                             @PathVariable UUID id) {
+        friendService.deleteFriend(authHeader, id);
+    }
 }

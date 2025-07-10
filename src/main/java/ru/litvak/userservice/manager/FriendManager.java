@@ -6,4 +6,6 @@ import java.util.UUID;
 
 public interface FriendManager {
     GetFriendsResponse getFriends(UUID me, UUID userId);
+
+    void delete(UUID me, UUID id);
 }
