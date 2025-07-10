@@ -1,5 +1,6 @@
 package ru.litvak.userservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class FriendsController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/requests")
     public void sendFriendRequest(@RequestHeader(value = "Authorization") String authHeader,
-                                  @RequestBody FriendIdRequest request) {
+                                  @RequestBody @Valid FriendIdRequest request) {
         friendService.sendFriendRequest(authHeader, request);
     }
 

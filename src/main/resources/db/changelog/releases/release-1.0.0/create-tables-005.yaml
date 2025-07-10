@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-user-profile-favourites
+      author: ilitvak
+      changes:
+        - createTable:
+            tableName: user_profile_favourites
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: favourite_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: user_profile_favourites
+            columnNames: user_id, favourite_id
+            constraintName: pk_user_profile_favourites
+
+        - addForeignKeyConstraint:
+            baseTableName: user_profile_favourites
+            baseColumnNames: user_id
+            constraintName: fk_user_profile_favourites_user
+            referencedTableName: user_profiles
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: user_profile_favourites
+            baseColumnNames: favourite_id
+            constraintName: fk_user_profile_favourites_favourite
+            referencedTableName: user_profiles
+            referencedColumnNames: id
+            onDelete: CASCADE

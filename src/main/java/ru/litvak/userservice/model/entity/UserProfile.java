@@ -78,6 +78,14 @@ public class UserProfile {
     )
     private Set<UserProfile> friends = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_profile_favourites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "favourite_id")
+    )
+    private Set<UserProfile> favourites = new HashSet<>();
+
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendRequest> sentFriendRequests = new HashSet<>();
 
