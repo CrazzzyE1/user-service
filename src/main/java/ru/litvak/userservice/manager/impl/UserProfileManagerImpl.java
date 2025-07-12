@@ -56,13 +56,14 @@ public class UserProfileManagerImpl implements UserProfileManager {
     public UserProfile getUserProfile(UUID me, UUID id) {
         UserProfile userProfile = userProfileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
-        if (userProfile.getIsDeleted()) {
-            throw new NotFoundException("User profile with id %s not found.".formatted(me));
-        }
         boolean isOwner = me.equals(id);
-        if (isOwner
-                || userProfile.isPublic()
-                || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile)) {
+        if (!isOwner) {
+            userProfile.setIsFriend(isFriends(me, userProfile));
+        }
+        if ((isOwner
+                    || userProfile.isPublic()
+                    || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile))
+                && !userProfile.getIsDeleted()) {
             userProfile.setIsOwner(isOwner);
             return userProfile;
         }
@@ -108,7 +109,6 @@ public class UserProfileManagerImpl implements UserProfileManager {
         toEdit.setPrivacyLevel(userProfileDto.getPrivacyLevel());
         toEdit.setStatus(userProfileDto.getStatus());
         toEdit.setGender(userProfileDto.getGender());
-        // FIXME 12.07.2025:13:36: edit keycloak fields
         return toEdit;
     }
 

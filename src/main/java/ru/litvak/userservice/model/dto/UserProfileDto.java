@@ -30,6 +30,7 @@ public class UserProfileDto {
 
     private StatusType status;
     private Boolean isOwner;
+    private Boolean isFriend;
     private String location;
     private Boolean isPublic;
 

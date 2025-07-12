@@ -95,6 +95,9 @@ public class UserProfile {
     @Transient
     private Boolean isOwner;
 
+    @Transient
+    private Boolean isFriend;
+
     public Boolean isPublic() {
         return PrivacyLevel.PUBLIC.equals(privacyLevel);
     }
