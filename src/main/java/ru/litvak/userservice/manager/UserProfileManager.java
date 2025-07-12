@@ -22,4 +22,8 @@ public interface UserProfileManager {
     void updateUserStatus(UUID me, StatusType status);
 
     RelationResponse getRelations(@NotNull UUID me, @NotNull UUID friend);
+
+    UserProfile edit(UUID me, UserProfileDto userProfileDto);
+
+    void delete(UUID me);
 }

@@ -21,4 +21,8 @@ public interface UserProfileService {
     void updateUserStatus(String authHeader, StatusType status);
 
     RelationResponse getRelations(@Valid RelationRequest request);
+
+    UserProfileDto editUserProfile(String authHeader, @Valid UserProfileDto userProfileDto);
+
+    void deleteUserProfile(String authHeader);
 }

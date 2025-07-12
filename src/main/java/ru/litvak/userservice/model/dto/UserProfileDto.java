@@ -1,5 +1,6 @@
 package ru.litvak.userservice.model.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,8 @@ public class UserProfileDto {
     private Boolean isOwner;
     private String location;
     private Boolean isPublic;
+
+    @NotNull
     private PrivacyLevel privacyLevel;
     private String language;
     private Instant createdAt;

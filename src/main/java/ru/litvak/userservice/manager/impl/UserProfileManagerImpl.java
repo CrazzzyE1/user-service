@@ -14,9 +14,12 @@ import ru.litvak.userservice.model.response.RelationResponse;
 import ru.litvak.userservice.repository.EnumLocalizationRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.TRUE;
+import static ru.litvak.userservice.enumerated.DeleteReason.USER_REQUEST;
 import static ru.litvak.userservice.enumerated.PrivacyLevel.FRIENDS_ONLY;
 
 @Component
@@ -53,15 +56,16 @@ public class UserProfileManagerImpl implements UserProfileManager {
     public UserProfile getUserProfile(UUID me, UUID id) {
         UserProfile userProfile = userProfileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
+        if (userProfile.getIsDeleted()) {
+            throw new NotFoundException("User profile with id %s not found.".formatted(me));
+        }
         boolean isOwner = me.equals(id);
-        if ((isOwner
+        if (isOwner
                 || userProfile.isPublic()
-                || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile))
-                && !userProfile.getIsDeleted()) {
+                || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile)) {
             userProfile.setIsOwner(isOwner);
             return userProfile;
         }
-
         return createDummyUserProfileWithoutPrivateFields(userProfile);
     }
 
@@ -93,6 +97,31 @@ public class UserProfileManagerImpl implements UserProfileManager {
         return new RelationResponse(userProfile.getPrivacyLevel(), isFriends(me, userProfile));
     }
 
+    @Override
+    @Transactional
+    public UserProfile edit(UUID me, UserProfileDto userProfileDto) {
+        UserProfile toEdit = userProfileRepository.findById(me)
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(me)));
+        if (toEdit.getIsDeleted()) {
+            throw new NotFoundException("User profile with id %s not found.".formatted(me));
+        }
+        toEdit.setPrivacyLevel(userProfileDto.getPrivacyLevel());
+        toEdit.setStatus(userProfileDto.getStatus());
+        toEdit.setGender(userProfileDto.getGender());
+        // FIXME 12.07.2025:13:36: edit keycloak fields
+        return toEdit;
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID me) {
+        UserProfile toDelete = userProfileRepository.findById(me)
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(me)));
+        toDelete.setIsDeleted(TRUE);
+        toDelete.setDeletedAt(Instant.now());
+        toDelete.setDeletionReason(USER_REQUEST);
+    }
+
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {
         UserProfile profile = new UserProfile();
         profile.setId(userProfile.getId());
@@ -100,6 +129,9 @@ public class UserProfileManagerImpl implements UserProfileManager {
         profile.setFirstName(userProfile.getFirstName());
         profile.setFamilyName(userProfile.getFamilyName());
         profile.setPrivacyLevel(userProfile.getPrivacyLevel());
+        profile.setIsDeleted(userProfile.getIsDeleted());
+        profile.setDeletionReason(userProfile.getDeletionReason());
+        profile.setDeletedAt(userProfile.getDeletedAt());
         return profile;
     }
 

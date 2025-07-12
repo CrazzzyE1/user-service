@@ -26,9 +26,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDto getMe(String authHeader) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
-        UserProfileDto dto = userProfileMapper.toDto(userProfileManager.getUserProfile(me, me));
-        dto.setIsOwner(true);
-        return dto;
+        return userProfileMapper.toDto(userProfileManager.getUserProfile(me, me));
     }
 
     @Override
@@ -51,5 +49,17 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public RelationResponse getRelations(RelationRequest request) {
         return userProfileManager.getRelations(request.getMe(), request.getFriend());
+    }
+
+    @Override
+    public UserProfileDto editUserProfile(String authHeader, UserProfileDto userProfileDto) {
+        UUID me = JwtTokenMapper.map(authHeader).getId();
+        return userProfileMapper.toDto(userProfileManager.edit(me, userProfileDto));
+    }
+
+    @Override
+    public void deleteUserProfile(String authHeader) {
+        UUID me = JwtTokenMapper.map(authHeader).getId();
+        userProfileManager.delete(me);
     }
 }

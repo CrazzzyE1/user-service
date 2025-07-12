@@ -51,4 +51,16 @@ public class UserProfileController {
     public RelationResponse getRelations(@RequestBody @Valid RelationRequest request) {
         return userProfileService.getRelations(request);
     }
+
+    @PatchMapping()
+    public UserProfileDto editUserProfile(@RequestHeader(value = "Authorization") String authHeader,
+                                          @RequestBody @Valid UserProfileDto userProfileDto) {
+        return userProfileService.editUserProfile(authHeader, userProfileDto);
+    }
+
+    @ResponseStatus(NO_CONTENT)
+    @DeleteMapping()
+    public void deleteUserProfile(@RequestHeader(value = "Authorization") String authHeader) {
+        userProfileService.deleteUserProfile(authHeader);
+    }
 }
