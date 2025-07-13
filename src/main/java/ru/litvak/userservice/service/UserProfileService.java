@@ -25,4 +25,6 @@ public interface UserProfileService {
     UserProfileDto editUserProfile(String authHeader, @Valid UserProfileDto userProfileDto);
 
     void deleteUserProfile(String authHeader);
+
+    Boolean isProfileActive(UUID id);
 }

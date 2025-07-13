@@ -26,4 +26,6 @@ public interface UserProfileManager {
     UserProfile edit(UUID me, UserProfileDto userProfileDto);
 
     void delete(UUID me);
+
+    Boolean isActive(UUID id);
 }

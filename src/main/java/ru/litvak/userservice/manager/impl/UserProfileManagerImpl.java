@@ -122,6 +122,13 @@ public class UserProfileManagerImpl implements UserProfileManager {
         toDelete.setDeletionReason(USER_REQUEST);
     }
 
+    @Override
+    public Boolean isActive(UUID id) {
+        UserProfile userProfile = userProfileRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
+        return !TRUE.equals(userProfile.getIsDeleted());
+    }
+
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {
         UserProfile profile = new UserProfile();
         profile.setId(userProfile.getId());
@@ -130,8 +137,6 @@ public class UserProfileManagerImpl implements UserProfileManager {
         profile.setFamilyName(userProfile.getFamilyName());
         profile.setPrivacyLevel(userProfile.getPrivacyLevel());
         profile.setIsDeleted(userProfile.getIsDeleted());
-        profile.setDeletionReason(userProfile.getDeletionReason());
-        profile.setDeletedAt(userProfile.getDeletedAt());
         return profile;
     }
 

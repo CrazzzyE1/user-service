@@ -62,4 +62,9 @@ public class UserProfileServiceImpl implements UserProfileService {
         UUID me = JwtTokenMapper.map(authHeader).getId();
         userProfileManager.delete(me);
     }
+
+    @Override
+    public Boolean isProfileActive(UUID id) {
+        return userProfileManager.isActive(id);
+    }
 }

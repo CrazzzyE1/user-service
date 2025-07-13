@@ -63,4 +63,9 @@ public class UserProfileController {
     public void deleteUserProfile(@RequestHeader(value = "Authorization") String authHeader) {
         userProfileService.deleteUserProfile(authHeader);
     }
+
+    @GetMapping("/{id}/active")
+    public Boolean isProfileActive(@PathVariable UUID id) {
+        return userProfileService.isProfileActive(id);
+    }
 }
