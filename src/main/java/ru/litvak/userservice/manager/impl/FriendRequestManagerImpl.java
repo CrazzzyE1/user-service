@@ -1,8 +1,13 @@
 package ru.litvak.userservice.manager.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.litvak.userservice.event.FriendRequestEvent;
 import ru.litvak.userservice.exception.NotFoundException;
 import ru.litvak.userservice.exception.RequestParameterException;
 import ru.litvak.userservice.manager.FriendRequestManager;
@@ -22,6 +27,7 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
 
     private final FriendRequestRepository friendRequestRepository;
     private final UserProfileRepository userProfileRepository;
+    private final KafkaTemplate<String, FriendRequestEvent> kafkaTemplate;
 
     @Override
     @Transactional
@@ -60,7 +66,22 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
                 .sender(sender)
                 .receiver(receiver)
                 .build();
-        friendRequestRepository.save(request);
+
+        FriendRequest saved = friendRequestRepository.save(request);
+        FriendRequestEvent event = FriendRequestEvent.builder()
+                .requestId(saved.getId())
+                .me(me)
+                .friend(friendId)
+                .build();
+
+        String typeId = "com.ilitvak.notification_service.event.%s".formatted(FriendRequestEvent.class.getSimpleName());
+
+        Message<FriendRequestEvent> message = MessageBuilder
+                .withPayload(event)
+                .setHeader(KafkaHeaders.TOPIC, "notifications.friends")
+                .setHeader("__TypeId__", typeId)
+                .build();
+        kafkaTemplate.send(message);
     }
 
     @Override
