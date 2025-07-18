@@ -52,3 +52,9 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /v3/api-docs
+
+notification:
+  json:
+    trusted:
+      package:
+        name: com.ilitvak.notification_service.event.

@@ -2,12 +2,9 @@ package ru.litvak.userservice.manager.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.litvak.userservice.event.FriendRequestEvent;
+import ru.litvak.userservice.event.NotificationEvent;
 import ru.litvak.userservice.exception.NotFoundException;
 import ru.litvak.userservice.exception.RequestParameterException;
 import ru.litvak.userservice.manager.FriendRequestManager;
@@ -15,11 +12,15 @@ import ru.litvak.userservice.model.entity.FriendRequest;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.repository.FriendRequestRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
+import ru.litvak.userservice.service.KafkaEventPublisher;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 import static ru.litvak.userservice.enumerated.FriendRequestStatus.*;
+import static ru.litvak.userservice.event.EventType.FRIENDS_REQUEST;
+import static ru.litvak.userservice.event.NotificationMethod.APP_BELL;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,8 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
 
     private final FriendRequestRepository friendRequestRepository;
     private final UserProfileRepository userProfileRepository;
-    private final KafkaTemplate<String, FriendRequestEvent> kafkaTemplate;
+    private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
+    private final KafkaEventPublisher publisher;
 
     @Override
     @Transactional
@@ -68,20 +70,17 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
                 .build();
 
         FriendRequest saved = friendRequestRepository.save(request);
-        FriendRequestEvent event = FriendRequestEvent.builder()
-                .requestId(saved.getId())
-                .me(me)
-                .friend(friendId)
+        NotificationEvent event = NotificationEvent.builder()
+                .eventId(UUID.randomUUID())
+                .senderId(me)
+                .recipientId(friendId)
+                .eventType(FRIENDS_REQUEST)
+                .entityId(String.valueOf(saved.getId()))
+                .eventDateTime(Instant.now())
+                .notificationMethods(List.of(APP_BELL))
                 .build();
 
-        String typeId = "com.ilitvak.notification_service.event.%s".formatted(FriendRequestEvent.class.getSimpleName());
-
-        Message<FriendRequestEvent> message = MessageBuilder
-                .withPayload(event)
-                .setHeader(KafkaHeaders.TOPIC, "notifications.friends")
-                .setHeader("__TypeId__", typeId)
-                .build();
-        kafkaTemplate.send(message);
+        publisher.publish("notifications.friends", String.valueOf(event.getEventId()), event, NotificationEvent.class);
     }
 
     @Override
