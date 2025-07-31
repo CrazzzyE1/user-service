@@ -3,6 +3,7 @@ package ru.litvak.userservice.manager;
 import jakarta.validation.constraints.NotNull;
 import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.model.dto.UserProfileDto;
+import ru.litvak.userservice.model.entity.ShortUserProfile;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.model.response.LocalizedEnum;
 import ru.litvak.userservice.model.response.RelationResponse;
@@ -15,7 +16,7 @@ public interface UserProfileManager {
 
     void update(UserProfileDto profileDto);
 
-    UserProfile getUserProfile(UUID me, UUID id);
+    UserProfile get(UUID me, UUID id);
 
     List<LocalizedEnum> getUserStatuses(Class<? extends Enum<?>> enumClass, Locale locale);
 
@@ -28,4 +29,6 @@ public interface UserProfileManager {
     void delete(UUID me);
 
     Boolean isActive(UUID id);
+
+    ShortUserProfile getShortProfile(UUID id);
 }

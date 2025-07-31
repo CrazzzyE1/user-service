@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.litvak.userservice.enumerated.StatusType;
+import ru.litvak.userservice.model.dto.ShortUserProfileDto;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.request.RelationRequest;
 import ru.litvak.userservice.model.request.UpdateUserStatusRequest;
@@ -33,6 +34,11 @@ public class UserProfileController {
     public UserProfileDto getUserProfile(@RequestHeader(value = "Authorization") String authHeader,
                                          @PathVariable UUID id) {
         return userProfileService.getUserProfile(authHeader, id);
+    }
+
+    @GetMapping("/{id}/short")
+    public ShortUserProfileDto getShortUserProfile(@PathVariable UUID id) {
+        return userProfileService.getShortUserProfile(id);
     }
 
     @GetMapping("/statuses")

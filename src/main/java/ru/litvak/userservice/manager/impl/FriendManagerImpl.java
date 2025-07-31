@@ -21,7 +21,7 @@ public class FriendManagerImpl implements FriendManager {
 
     @Override
     public GetFriendsResponse getFriends(UUID me, UUID userId) {
-        UserProfile userProfile = userProfileManager.getUserProfile(me, userId);
+        UserProfile userProfile = userProfileManager.get(me, userId);
         return new GetFriendsResponse(userProfile.getFriends().stream()
                 .map(UserProfile::getId)
                 .toList());

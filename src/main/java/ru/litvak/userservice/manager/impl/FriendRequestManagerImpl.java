@@ -1,10 +1,12 @@
 package ru.litvak.userservice.manager.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.litvak.userservice.event.NotificationEvent;
+import ru.litvak.userservice.event.EventType;
+import ru.litvak.userservice.event.EventDto;
+import ru.litvak.userservice.event.NotificationMethod;
 import ru.litvak.userservice.exception.NotFoundException;
 import ru.litvak.userservice.exception.RequestParameterException;
 import ru.litvak.userservice.manager.FriendRequestManager;
@@ -14,11 +16,11 @@ import ru.litvak.userservice.repository.FriendRequestRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
 import ru.litvak.userservice.service.KafkaEventPublisher;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 import static ru.litvak.userservice.enumerated.FriendRequestStatus.*;
+import static ru.litvak.userservice.event.EventType.FRIENDS_ACCEPT;
 import static ru.litvak.userservice.event.EventType.FRIENDS_REQUEST;
 import static ru.litvak.userservice.event.NotificationMethod.APP_BELL;
 
@@ -26,9 +28,11 @@ import static ru.litvak.userservice.event.NotificationMethod.APP_BELL;
 @RequiredArgsConstructor
 public class FriendRequestManagerImpl implements FriendRequestManager {
 
+    @Value(value = "${notifications.topic.friends}")
+    private String TOPIC_FRIENDS;
+
     private final FriendRequestRepository friendRequestRepository;
     private final UserProfileRepository userProfileRepository;
-    private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
     private final KafkaEventPublisher publisher;
 
     @Override
@@ -42,6 +46,8 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
         request.setStatus(ACCEPTED);
         userProfile.getFriends().add(friendProfile);
         friendProfile.getFriends().add(userProfile);
+
+        sendNotification(request.getId(), me, friendProfile.getId(), FRIENDS_ACCEPT, List.of(APP_BELL));
     }
 
     @Override
@@ -64,23 +70,12 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
             throw new RuntimeException("Users are already friends");
         }
 
-        FriendRequest request = FriendRequest.builder()
+        FriendRequest saved = friendRequestRepository.save(FriendRequest.builder()
                 .sender(sender)
                 .receiver(receiver)
-                .build();
+                .build());
 
-        FriendRequest saved = friendRequestRepository.save(request);
-        NotificationEvent event = NotificationEvent.builder()
-                .eventId(UUID.randomUUID())
-                .senderId(me)
-                .recipientId(friendId)
-                .eventType(FRIENDS_REQUEST)
-                .entityId(String.valueOf(saved.getId()))
-                .eventDateTime(Instant.now())
-                .notificationMethods(List.of(APP_BELL))
-                .build();
-
-        publisher.publish("notifications.friends", String.valueOf(event.getEventId()), event, NotificationEvent.class);
+        sendNotification(saved.getId(), me, friendId, FRIENDS_REQUEST, List.of(APP_BELL));
     }
 
     @Override
@@ -108,5 +103,18 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
         FriendRequest request = friendRequestRepository.findByIdAndSenderAndStatus(id, userProfile, PENDING)
                 .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
         request.setStatus(REJECTED);
+    }
+
+    private void sendNotification(Long entityId, UUID me, UUID friendId, EventType eventType,
+                                  List<NotificationMethod> notificationMethods) {
+        EventDto event = EventDto.builder()
+                .senderId(me)
+                .recipientId(friendId)
+                .type(eventType)
+                .entityId(String.valueOf(entityId))
+                .methods(notificationMethods)
+                .build();
+
+        publisher.publish(TOPIC_FRIENDS, String.valueOf(event.getId()), event, EventDto.class);
     }
 }

@@ -8,6 +8,7 @@ import ru.litvak.userservice.exception.NotFoundException;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.EnumLocalization;
+import ru.litvak.userservice.model.entity.ShortUserProfile;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.model.response.LocalizedEnum;
 import ru.litvak.userservice.model.response.RelationResponse;
@@ -53,7 +54,7 @@ public class UserProfileManagerImpl implements UserProfileManager {
 
     @Transactional
     @Override
-    public UserProfile getUserProfile(UUID me, UUID id) {
+    public UserProfile get(UUID me, UUID id) {
         UserProfile userProfile = userProfileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
         boolean isOwner = me.equals(id);
@@ -61,8 +62,8 @@ public class UserProfileManagerImpl implements UserProfileManager {
             userProfile.setIsFriend(isFriends(me, userProfile));
         }
         if ((isOwner
-                    || userProfile.isPublic()
-                    || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile))
+                || userProfile.isPublic()
+                || FRIENDS_ONLY.equals(userProfile.getPrivacyLevel()) && isFriends(me, userProfile))
                 && !userProfile.getIsDeleted()) {
             userProfile.setIsOwner(isOwner);
             return userProfile;
@@ -128,6 +129,13 @@ public class UserProfileManagerImpl implements UserProfileManager {
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
         return !TRUE.equals(userProfile.getIsDeleted());
     }
+
+    @Override
+    public ShortUserProfile getShortProfile(UUID id) {
+        return userProfileRepository.findShortById(id)
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
+    }
+
 
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {
         UserProfile profile = new UserProfile();

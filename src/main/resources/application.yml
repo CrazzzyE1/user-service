@@ -53,8 +53,10 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-notification:
+notifications:
   json:
     trusted:
       package:
-        name: com.ilitvak.notification_service.event.
+        name: ru.ilitvak.notification_service.event.
+  topic:
+    friends: notifications.friends

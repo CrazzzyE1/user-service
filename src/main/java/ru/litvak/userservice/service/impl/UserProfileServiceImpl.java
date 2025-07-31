@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.mapper.UserProfileMapper;
+import ru.litvak.userservice.model.dto.ShortUserProfileDto;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.request.RelationRequest;
 import ru.litvak.userservice.model.response.LocalizedEnum;
@@ -26,13 +27,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDto getMe(String authHeader) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
-        return userProfileMapper.toDto(userProfileManager.getUserProfile(me, me));
+        return userProfileMapper.toDto(userProfileManager.get(me, me));
     }
 
     @Override
     public UserProfileDto getUserProfile(String authHeader, UUID id) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
-        return userProfileMapper.toDto(userProfileManager.getUserProfile(me, id));
+        return userProfileMapper.toDto(userProfileManager.get(me, id));
     }
 
     @Override
@@ -66,5 +67,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Boolean isProfileActive(UUID id) {
         return userProfileManager.isActive(id);
+    }
+
+    @Override
+    public ShortUserProfileDto getShortUserProfile(UUID id) {
+        return userProfileMapper.toShortDto(userProfileManager.getShortProfile(id));
     }
 }

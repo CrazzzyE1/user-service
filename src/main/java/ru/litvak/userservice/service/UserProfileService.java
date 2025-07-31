@@ -2,6 +2,7 @@ package ru.litvak.userservice.service;
 
 import jakarta.validation.Valid;
 import ru.litvak.userservice.enumerated.StatusType;
+import ru.litvak.userservice.model.dto.ShortUserProfileDto;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.request.RelationRequest;
 import ru.litvak.userservice.model.response.LocalizedEnum;
@@ -27,4 +28,6 @@ public interface UserProfileService {
     void deleteUserProfile(String authHeader);
 
     Boolean isProfileActive(UUID id);
+
+    ShortUserProfileDto getShortUserProfile(UUID id);
 }

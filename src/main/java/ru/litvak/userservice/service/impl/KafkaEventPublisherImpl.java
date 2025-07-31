@@ -13,7 +13,7 @@ import ru.litvak.userservice.service.KafkaEventPublisher;
 @RequiredArgsConstructor
 public class KafkaEventPublisherImpl implements KafkaEventPublisher {
 
-    @Value("${notification.json.trusted.package.name}")
+    @Value("${notifications.json.trusted.package.name}")
     private String trustedPackage;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
