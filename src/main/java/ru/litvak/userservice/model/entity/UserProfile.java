@@ -106,6 +106,10 @@ public class UserProfile {
         return friends.size();
     }
 
+    public Integer getFavouritesCount() {
+        return favourites.size();
+    }
+
     public boolean isChangeBirthDateAvailable() {
         return attemptsChangeBirthDate <= 3;
     }

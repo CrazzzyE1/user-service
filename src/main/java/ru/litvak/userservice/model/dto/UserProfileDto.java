@@ -27,6 +27,7 @@ public class UserProfileDto {
     private Boolean isEmailVerified;
     private LocalDate birthDate;
     private Integer friendsCount;
+    private Integer favouritesCount;
 
     private StatusType status;
     private Boolean isOwner;
