@@ -75,7 +75,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public List<UserProfileDto> search(String query) {
-        return userProfileMapper.toListDto(userProfileManager.search(query));
+    public List<UserProfileDto> search(String query, String authHeader) {
+        UUID me = JwtTokenMapper.map(authHeader).getId();
+        return userProfileMapper.toListDto(userProfileManager.search(query, me));
     }
 }

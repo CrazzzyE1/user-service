@@ -31,5 +31,5 @@ public interface UserProfileService {
 
     ShortUserProfileDto getShortUserProfile(UUID id);
 
-    List<UserProfileDto> search(String query);
+    List<UserProfileDto> search(String query, String authHeader);
 }

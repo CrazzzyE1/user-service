@@ -32,5 +32,5 @@ public interface UserProfileManager {
 
     ShortUserProfile getShortProfile(UUID id);
 
-    List<UserProfile> search(String query);
+    List<UserProfile> search(String query, UUID me);
 }

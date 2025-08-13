@@ -76,7 +76,8 @@ public class UserProfileController {
     }
 
     @GetMapping("/search")
-    public List<UserProfileDto> search(@RequestParam String query) {
-        return userProfileService.search(query);
+    public List<UserProfileDto> search(@RequestHeader(value = "Authorization") String authHeader,
+                                       @RequestParam String query) {
+        return userProfileService.search(query, authHeader);
     }
 }

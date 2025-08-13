@@ -137,8 +137,8 @@ public class UserProfileManagerImpl implements UserProfileManager {
     }
 
     @Override
-    public List<UserProfile> search(String query) {
-        return userProfileRepository.searchAllByQuery(query);
+    public List<UserProfile> search(String query, UUID me) {
+        return userProfileRepository.searchAllByQuery(query, me);
     }
 
 
