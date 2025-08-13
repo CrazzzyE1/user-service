@@ -31,4 +31,6 @@ public interface UserProfileManager {
     Boolean isActive(UUID id);
 
     ShortUserProfile getShortProfile(UUID id);
+
+    List<UserProfile> search(String query);
 }

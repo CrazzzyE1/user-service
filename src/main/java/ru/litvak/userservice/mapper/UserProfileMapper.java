@@ -8,6 +8,8 @@ import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.ShortUserProfile;
 import ru.litvak.userservice.model.entity.UserProfile;
 
+import java.util.List;
+
 import static ru.litvak.userservice.enumerated.PrivacyLevel.PUBLIC;
 
 @Mapper(componentModel = "spring")
@@ -26,4 +28,6 @@ public interface UserProfileMapper {
     }
 
     ShortUserProfileDto toShortDto(ShortUserProfile entity);
+
+    List<UserProfileDto> toListDto(List<UserProfile> list);
 }

@@ -74,4 +74,9 @@ public class UserProfileController {
     public Boolean isProfileActive(@PathVariable UUID id) {
         return userProfileService.isProfileActive(id);
     }
+
+    @GetMapping("/search")
+    public List<UserProfileDto> search(@RequestParam String query) {
+        return userProfileService.search(query);
+    }
 }

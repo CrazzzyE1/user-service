@@ -136,6 +136,11 @@ public class UserProfileManagerImpl implements UserProfileManager {
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(id)));
     }
 
+    @Override
+    public List<UserProfile> search(String query) {
+        return userProfileRepository.searchAllByQuery(query);
+    }
+
 
     private UserProfile createDummyUserProfileWithoutPrivateFields(UserProfile userProfile) {
         UserProfile profile = new UserProfile();

@@ -73,4 +73,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     public ShortUserProfileDto getShortUserProfile(UUID id) {
         return userProfileMapper.toShortDto(userProfileManager.getShortProfile(id));
     }
+
+    @Override
+    public List<UserProfileDto> search(String query) {
+        return userProfileMapper.toListDto(userProfileManager.search(query));
+    }
 }

@@ -30,4 +30,6 @@ public interface UserProfileService {
     Boolean isProfileActive(UUID id);
 
     ShortUserProfileDto getShortUserProfile(UUID id);
+
+    List<UserProfileDto> search(String query);
 }
