@@ -95,12 +95,13 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
         UserProfile userProfile = userProfileRepository.findById(me)
                 .orElseThrow(() -> new NotFoundException("Profile with id %s not found".formatted(me)));
         if (isCanceled) {
-            FriendRequest request = friendRequestRepository.findByIdAndReceiverAndStatus(id, userProfile, PENDING)
+            FriendRequest request = friendRequestRepository.findByIdAndSenderAndStatus(id, userProfile, PENDING)
+
                     .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
             request.setStatus(CANCELLED);
             return;
         }
-        FriendRequest request = friendRequestRepository.findByIdAndSenderAndStatus(id, userProfile, PENDING)
+        FriendRequest request = friendRequestRepository.findByIdAndReceiverAndStatus(id, userProfile, PENDING)
                 .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
         request.setStatus(REJECTED);
     }
