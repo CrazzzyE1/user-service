@@ -96,7 +96,6 @@ public class FriendRequestManagerImpl implements FriendRequestManager {
                 .orElseThrow(() -> new NotFoundException("Profile with id %s not found".formatted(me)));
         if (isCanceled) {
             FriendRequest request = friendRequestRepository.findByIdAndSenderAndStatus(id, userProfile, PENDING)
-
                     .orElseThrow(() -> new NotFoundException("FriendRequest with id %s and status PENDING not found".formatted(id)));
             request.setStatus(CANCELLED);
             return;
