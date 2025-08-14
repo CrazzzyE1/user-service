@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.litvak.userservice.enumerated.StatusType;
 import ru.litvak.userservice.exception.NotFoundException;
+import ru.litvak.userservice.manager.FriendRequestManager;
 import ru.litvak.userservice.manager.UserProfileManager;
 import ru.litvak.userservice.model.dto.UserProfileDto;
 import ru.litvak.userservice.model.entity.EnumLocalization;
+import ru.litvak.userservice.model.entity.FriendRequest;
 import ru.litvak.userservice.model.entity.ShortUserProfile;
 import ru.litvak.userservice.model.entity.UserProfile;
 import ru.litvak.userservice.model.response.LocalizedEnum;
@@ -27,6 +29,7 @@ import static ru.litvak.userservice.enumerated.PrivacyLevel.FRIENDS_ONLY;
 @RequiredArgsConstructor
 public class UserProfileManagerImpl implements UserProfileManager {
 
+    private final FriendRequestManager friendRequestManager;
     private final UserProfileRepository userProfileRepository;
     private final EnumLocalizationRepository enumLocalizationRepository;
 
@@ -94,9 +97,19 @@ public class UserProfileManagerImpl implements UserProfileManager {
 
     @Override
     public RelationResponse getRelations(UUID me, UUID friend) {
-        UserProfile userProfile = userProfileRepository.findById(friend)
+        UserProfile friendProfile = userProfileRepository.findById(friend)
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(friend)));
-        return new RelationResponse(userProfile.getPrivacyLevel(), isFriends(me, userProfile));
+
+        UserProfile profile = userProfileRepository.findById(me)
+                .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(me)));
+
+        return RelationResponse.builder()
+                .privacyLevel(friendProfile.getPrivacyLevel())
+                .isFriends(isFriends(me, friendProfile))
+                .isFavourites(isFavourites(friend, profile))
+                .hasIncomeFriendsRequest(hasIncomeFriendsRequest(me, friend))
+                .hasOutcomeFriendsRequest(hasOutcomeFriendsRequest(me, friend))
+                .build();
     }
 
     @Override
@@ -157,5 +170,24 @@ public class UserProfileManagerImpl implements UserProfileManager {
         return userProfile.getFriends().stream()
                 .map(UserProfile::getId)
                 .anyMatch(id -> id.equals(me));
+    }
+
+    private boolean isFavourites(UUID friend, UserProfile userProfile) {
+        return userProfile.getFavourites().stream()
+                .map(UserProfile::getId)
+                .anyMatch(id -> id.equals(friend));
+    }
+
+    private boolean hasIncomeFriendsRequest(UUID me, UUID friend) {
+        return friendRequestManager.get(me, true).stream()
+                .map(FriendRequest::getSender)
+                .anyMatch(sender -> sender.getId().equals(friend));
+    }
+
+
+    private boolean hasOutcomeFriendsRequest(UUID me, UUID friend) {
+        return friendRequestManager.get(me, false).stream()
+                .map(FriendRequest::getReceiver)
+                .anyMatch(receiver -> receiver.getId().equals(friend));
     }
 }

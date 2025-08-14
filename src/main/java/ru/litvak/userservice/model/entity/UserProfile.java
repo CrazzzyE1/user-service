@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_profiles"   )
+@Table(name = "user_profiles")
 public class UserProfile {
 
     @Id
@@ -40,7 +40,7 @@ public class UserProfile {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(name ="attempts_change_birth_date", nullable = false)
+    @Column(name = "attempts_change_birth_date", nullable = false)
     private Integer attemptsChangeBirthDate = 0;
 
     private String location;
