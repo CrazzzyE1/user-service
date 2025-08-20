@@ -55,7 +55,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileDto editUserProfile(String authHeader, UserProfileDto userProfileDto) {
         UUID me = JwtTokenMapper.map(authHeader).getId();
-        return userProfileMapper.toDto(userProfileManager.edit(me, userProfileDto));
+        return userProfileMapper.toDto(userProfileManager.edit(me, userProfileMapper.toEntity(userProfileDto)));
     }
 
     @Override

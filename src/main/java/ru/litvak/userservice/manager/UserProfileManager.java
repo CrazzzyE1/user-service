@@ -24,7 +24,7 @@ public interface UserProfileManager {
 
     RelationResponse getRelations(@NotNull UUID me, @NotNull UUID friend);
 
-    UserProfile edit(UUID me, UserProfileDto userProfileDto);
+    UserProfile edit(UUID me, UserProfile userProfile);
 
     void delete(UUID me);
 

@@ -114,15 +114,20 @@ public class UserProfileManagerImpl implements UserProfileManager {
 
     @Override
     @Transactional
-    public UserProfile edit(UUID me, UserProfileDto userProfileDto) {
+    public UserProfile edit(UUID me, UserProfile newData) {
         UserProfile toEdit = userProfileRepository.findById(me)
                 .orElseThrow(() -> new NotFoundException("User profile with id %s not found.".formatted(me)));
         if (toEdit.getIsDeleted()) {
             throw new NotFoundException("User profile with id %s not found.".formatted(me));
         }
-        toEdit.setPrivacyLevel(userProfileDto.getPrivacyLevel());
-        toEdit.setStatus(userProfileDto.getStatus());
-        toEdit.setGender(userProfileDto.getGender());
+
+        toEdit.setFirstName(newData.getFirstName());
+        toEdit.setFamilyName(newData.getFamilyName());
+        toEdit.setFullName(newData.getFullName());
+        toEdit.setBirthDate(newData.getBirthDate());
+        toEdit.setPrivacyLevel(newData.getPrivacyLevel());
+        toEdit.setStatus(newData.getStatus());
+        toEdit.setGender(newData.getGender());
         return toEdit;
     }
 

@@ -22,9 +22,17 @@ public interface UserProfileMapper {
     @Mapping(target = "isPublic", source = ".", qualifiedByName = "isPublic")
     UserProfileDto toDto(UserProfile entity);
 
+    @Mapping(target = "fullName", source = ".", qualifiedByName = "fullName")
+    UserProfile toEntity(UserProfileDto dto);
+
     @Named("isPublic")
-    default Boolean isPublic(UserProfile userProfile) {
-        return PUBLIC.equals(userProfile.getPrivacyLevel());
+    default Boolean isPublic(UserProfile entity) {
+        return PUBLIC.equals(entity.getPrivacyLevel());
+    }
+
+    @Named("fullName")
+    default String fullName(UserProfileDto dto) {
+        return dto.getFamilyName() + "  " + dto.getFirstName();
     }
 
     ShortUserProfileDto toShortDto(ShortUserProfile entity);

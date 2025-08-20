@@ -58,7 +58,7 @@ public class UserProfileController {
         return userProfileService.getRelations(request);
     }
 
-    @PatchMapping()
+    @PatchMapping("/me")
     public UserProfileDto editUserProfile(@RequestHeader(value = "Authorization") String authHeader,
                                           @RequestBody @Valid UserProfileDto userProfileDto) {
         return userProfileService.editUserProfile(authHeader, userProfileDto);
