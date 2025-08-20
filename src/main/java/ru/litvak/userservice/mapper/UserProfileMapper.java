@@ -32,7 +32,7 @@ public interface UserProfileMapper {
 
     @Named("fullName")
     default String fullName(UserProfileDto dto) {
-        return dto.getFamilyName() + "  " + dto.getFirstName();
+        return dto.getFirstName() + "  " + dto.getFamilyName();
     }
 
     ShortUserProfileDto toShortDto(ShortUserProfile entity);
