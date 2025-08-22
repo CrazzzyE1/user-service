@@ -37,13 +37,13 @@ public class UserProfileManagerImpl implements UserProfileManager {
     @Override
     public void update(UserProfileDto profileDto) {
         Optional<UserProfile> profileOptional = userProfileRepository.findById(profileDto.getId());
-        UserProfile userProfile;
+
         if (profileOptional.isPresent()) {
-            userProfile = profileOptional.get();
-        } else {
-            userProfile = new UserProfile();
-            userProfile.setId(profileDto.getId());
+            return;
         }
+
+        UserProfile userProfile = new UserProfile();
+        userProfile.setId(profileDto.getId());
         userProfile.setUsername(profileDto.getUsername());
         userProfile.setFullName(profileDto.getFullName());
         userProfile.setFirstName(profileDto.getFirstName());
@@ -51,7 +51,6 @@ public class UserProfileManagerImpl implements UserProfileManager {
         userProfile.setEmail(profileDto.getEmail());
         userProfile.setIsEmailVerified(profileDto.getIsEmailVerified());
         userProfile.setBirthDate(profileDto.getBirthDate());
-
         userProfileRepository.save(userProfile);
     }
 
