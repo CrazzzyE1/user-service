@@ -156,7 +156,29 @@ public class UserProfileManagerImpl implements UserProfileManager {
 
     @Override
     public List<UserProfile> search(String query, UUID me) {
-        return userProfileRepository.findAll(UserProfileSpecifications.searchByQuery(query, me));
+        return userProfileRepository.findAll(UserProfileSpecifications.searchByQuery(query, me))
+                .stream()
+                .sorted(Comparator.comparingInt(up -> relevance(up, query)))
+                .toList();
+    }
+
+    private int relevance(UserProfile up, String rawQuery) {
+        if (rawQuery == null || rawQuery.isBlank()) return Integer.MAX_VALUE;
+
+        String query = rawQuery.toLowerCase().trim();
+        String firstName = up.getFirstName() != null ? up.getFirstName().toLowerCase() : "";
+        String familyName = up.getFamilyName() != null ? up.getFamilyName().toLowerCase() : "";
+        String full = (firstName + " " + familyName).trim();
+
+        if (full.equals(query)) return 0;
+
+        if (firstName.equals(query) || familyName.equals(query)) return 1;
+
+        if (firstName.startsWith(query) || familyName.startsWith(query)) return 2;
+
+        if (firstName.contains(query) || familyName.contains(query)) return 3;
+
+        return 4;
     }
 
 
