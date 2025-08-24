@@ -18,18 +18,19 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, UUID> 
             "AND up.isDeleted = false " +
             "AND (" +
             "   LOWER(up.fullName) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "   OR (" +
-            "       LOWER(SUBSTRING(up.email, 1, LOCATE('@', up.email) - 1)) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "       AND up.email LIKE '%@%'" +  // Гарантируем, что email содержит @
-            "   )" +
+            "   OR LOWER(up.firstName) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "   OR LOWER(up.familyName) LIKE LOWER(CONCAT('%', :query, '%')) " +
             ") " +
             "ORDER BY " +
             "  CASE " +
             "    WHEN LOWER(up.fullName) = LOWER(:query) THEN 0 " +
-            "    WHEN LOWER(SUBSTRING(up.email, 1, LOCATE('@', up.email) - 1)) = LOWER(:query) THEN 1 " +
-            "    WHEN LOWER(up.fullName) LIKE LOWER(CONCAT(:query, '%')) THEN 2 " +
-            "    WHEN LOWER(SUBSTRING(up.email, 1, LOCATE('@', up.email) - 1)) LIKE LOWER(CONCAT(:query, '%')) THEN 3 " +
-            "    ELSE 4 " +
+            "    WHEN LOWER(up.firstName) = LOWER(:query) THEN 1 " +
+            "    WHEN LOWER(up.familyName) = LOWER(:query) THEN 2 " +
+            "    WHEN LOWER(up.fullName) LIKE LOWER(CONCAT(:query, '%')) THEN 3 " +
+            "    WHEN LOWER(up.firstName) LIKE LOWER(CONCAT(:query, '%')) THEN 4 " +
+            "    WHEN LOWER(up.familyName) LIKE LOWER(CONCAT(:query, '%')) THEN 5 " +
+            "    ELSE 6 " +
             "  END")
     List<UserProfile> searchAllByQuery(@Param("query") String query, @Param("me") UUID me);
+
 }
