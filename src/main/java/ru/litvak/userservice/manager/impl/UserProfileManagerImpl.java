@@ -16,6 +16,7 @@ import ru.litvak.userservice.model.response.LocalizedEnum;
 import ru.litvak.userservice.model.response.RelationResponse;
 import ru.litvak.userservice.repository.EnumLocalizationRepository;
 import ru.litvak.userservice.repository.UserProfileRepository;
+import ru.litvak.userservice.util.UserProfileSpecifications;
 
 import java.time.Instant;
 import java.util.*;
@@ -155,7 +156,7 @@ public class UserProfileManagerImpl implements UserProfileManager {
 
     @Override
     public List<UserProfile> search(String query, UUID me) {
-        return userProfileRepository.searchAllByQuery(query, me);
+        return userProfileRepository.findAll(UserProfileSpecifications.searchByQuery(query, me));
     }
 
 
