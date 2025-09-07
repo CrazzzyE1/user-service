@@ -20,12 +20,9 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, UUID>,
 
     @Modifying
     @Query(value = """
-        INSERT INTO user_profiles (id, username, full_name, first_name, family_name, 
-                                  email, is_email_verified, birth_date, attempts_change_birth_date, privacy_level, 
-                                           created_at)
-        VALUES (:id, :username, :fullName, :firstName, :familyName, :email, :isEmailVerified, :birthDate, 0, 'PUBLIC', 
-                        CURRENT_TIMESTAMP)
-        ON CONFLICT (id) DO NOTHING
+        INSERT INTO user_profiles (id, username, full_name, first_name, family_name, email, is_email_verified, birth_date, attempts_change_birth_date, privacy_level, created_at)
+        VALUES (:id, :username, :fullName, :firstName, :familyName, :email, :isEmailVerified, :birthDate, 0, 'PUBLIC', CURRENT_TIMESTAMP)
+        ON CONFLICT DO NOTHING
         """, nativeQuery = true)
     void insertIfNotExists(@Param("id") UUID id,
                            @Param("username") String username,
