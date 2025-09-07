@@ -37,19 +37,16 @@ public class UserProfileManagerImpl implements UserProfileManager {
     @Transactional
     @Override
     public void update(UserProfileDto profileDto) {
-        if (userProfileRepository.existsById(profileDto.getId())) {
-            return;
-        }
-        UserProfile userProfile = new UserProfile();
-        userProfile.setId(profileDto.getId());
-        userProfile.setUsername(profileDto.getUsername());
-        userProfile.setFullName(profileDto.getFullName());
-        userProfile.setFirstName(profileDto.getFirstName());
-        userProfile.setFamilyName(profileDto.getFamilyName());
-        userProfile.setEmail(profileDto.getEmail());
-        userProfile.setIsEmailVerified(profileDto.getIsEmailVerified());
-        userProfile.setBirthDate(profileDto.getBirthDate());
-        userProfileRepository.insertIgnore(userProfile);
+        userProfileRepository.insertIfNotExists(
+                profileDto.getId(),
+                profileDto.getUsername(),
+                profileDto.getFullName(),
+                profileDto.getFirstName(),
+                profileDto.getFamilyName(),
+                profileDto.getEmail(),
+                profileDto.getIsEmailVerified(),
+                profileDto.getBirthDate()
+        );
     }
 
     @Transactional
